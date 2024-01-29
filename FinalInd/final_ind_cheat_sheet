@@ -1,0 +1,205 @@
+// Combination code -- Also see passwords
+public static void printcombos(int[] combo, int k) {
+
+     // This itself is a valid combination.
+     print(combo, k);
+     // Determine the smallest item that can go in slot k.
+     int start = 0;
+     if (k > 0)
+        start = combo[k-1] + 1;
+     // Same as odometer, except a different start value.
+     for (int i=start; i<combo.length; i++)
+     {
+         combo[k] = i;
+         printcombos(combo, k+1);
+     }
+}
+
+// Permutation code for ints
+public static void printperms(int[] perm, boolean[] used, int k)
+{
+     if (k == perm.length)
+        print(perm, perm.length);
+     for (int i=0; i<perm.length; i++)
+     {
+         if (!used[i])
+         {
+             used[i] = true;
+             perm[k] = i;
+             printperms(perm, used, k+1);
+             used[i] = false;
+         }
+     }
+}
+
+// TreeSet -- TreeMap is lowerKey(), higherKey() -- see dot
+ts.add(val); // Adds the specified value to the TreeSet
+
+ts.remove(val); // Removes the specified value from the TreeSet
+
+ts.contains(val); // Returns if the specified value is in the TreeSet
+
+ts.first(); // Returns the smallest element in the TreeSet
+
+ts.last(); // Returns the largest element in the TreeSet
+
+ts.pollFirst(); // Returns and removes the smallest element
+
+ts.pollLast(); // Returns and removes the largest element
+
+ts.lower(val); // Returns the first element strictly lower than val
+
+ts.higher(val); // Returns the first element strictly higher than val
+
+ts.floor(val); // Returns the first value ≤ val
+
+ts.ceiling(val); // Returns the first value ≥ val
+
+// Keeps all elements shared between ts and other collection
+ts.retainAll(otherCollection);
+
+// Remove all elements shared between ts and other collection
+ts.removeAll(otherCollection);
+
+// Checks if ts contains all elements of other collection
+ts.containsAll(otherCollection);
+
+
+// Graph algs
+// bfs
+public static int[] bfs(int v)
+{
+
+		// Set up our distance array.
+		int[] dist = new int[numV];
+		Arrays.fill(dist, -1);
+		dist[v] = 0;
+
+		// Set up our queue for hte BFS.
+		LinkedList<Integer> q = new LinkedList<Integer>();
+		q.offer(v);
+
+		// Run the BFS until there are no new places to go.
+		while (q.size() > 0)
+        {
+
+			// Get the next item.
+			int cur = q.poll();
+
+			// Go through neighbors - if there is a new one, add to the queue and set its distance.
+			for (Integer next : (ArrayList<Integer>)graph[cur])
+            {
+				if (dist[next] == -1)
+                {
+					q.offer(next);
+					dist[next] = dist[cur] + 1;
+				}
+			}
+		}
+
+		return dist;
+}
+
+// For prims just use his or see cables
+// Topo sort that checks if there's more than one
+public static int topo_sort(boolean [][] matrix)
+{
+    int[] incoming = new int[matrix.length];
+    int cnt = 0;
+
+    for (int i = 0; i < matrix.length; i++)
+        for (int j = 0; j < matrix.length; j++)
+            incoming[j] += (matrix[i][j] ? 1 : 0);
+
+    ArrayList<Integer> q = new ArrayList<>();
+    int res = 0;
+    for (int i = 0; i < incoming.length; i++)
+        if (incoming[i] == 0)
+            q.add(i);
+
+    while (!q.isEmpty())
+    {
+        res = Math.max(res, q.size());
+        int node = q.remove(0);
+
+        cnt++;
+
+        for (int i = 0; i < matrix.length; i++)
+            if (matrix[node][i] && --incoming[i] == 0)
+                q.add(i);
+    }
+
+    if (cnt != matrix.length)
+        return 0;
+
+    return res;
+}
+
+// floyd given matrix
+public static int [][] shortestpath(int[][] adj)
+{
+    int n = adj.length;
+    int [][] m = copy(adj);
+
+    for (int k=0; k<n;k++)
+        for (int i=0; i<n; i++)
+            for (int j=0; j<n;j++)
+                m[i][j] = Math.min(m[i][j], m[i][k] + m[k][j]);
+
+    return m;
+}
+public static int [][] copy(int[][] a)
+{
+    int [][] res = new int[a.length][a[0].length];
+    for (int i = 0; i < a.length; i++)
+        for (int j = 0; j < a[0].length; j++)
+            res[i][j] = a[i][j];
+    return res;
+}
+
+// dijkstra
+While S != V do the following:
+1) Find the vertex (not is S) that corresponds to the minimal estimate of shortest
+ distances in array D. Use a priority queue to speed up this step.
+2) Add this vertex, vi into S.
+3) Recompute all estimates based on edges emanating
+ from v. In particular, for each edge from v, compute
+ D[i]+wij. If this quantity is less than D[j], then set
+ D[j] = D[i]+wij.
+
+public static int [] dijkstra(int V, ArrayList<ArrayList<AdjListNode>> graph, int src)
+{
+    int oo = (int) 1e9;
+
+    int[] distance = new int[V];
+    for (int i = 0; i < V; i++)
+        distance[i] = oo;
+
+    distance[src] = 0;
+
+    PriorityQueue<Edge> pq = new PriorityQueue<>()
+    pq.add(new Edge(src, 0));
+
+    while (pq.size() > 0) {
+        Edge current = pq.poll();
+
+        for (Edge n : graph.get(current.getVertex())) {
+            if (distance[current.e] + n.w < distance[n.e]) {
+                distance[n.e] = n.w + distance[current.e];
+                pq.add(new Edge(n.e, distance[n.e]));
+            }
+        }
+}
+// Stores where an edge is going to and its weight.
+static class Edge implements Comparable<Edge> {
+    int e, w;
+
+    public Edge(int e, int w) {
+      this.e = e;
+      this.w = w;
+    }
+
+    public int compareTo(Edge o) {
+      return w - o.w;
+    }
+}
